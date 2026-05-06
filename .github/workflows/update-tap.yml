@@ -1,0 +1,67 @@
+name: Update Homebrew tap
+
+# Triggers
+#   - tag push matching v*  (normal release flow)
+#   - manual run from the Actions tab (for backfill / re-runs)
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish (e.g. v0.3.0)'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve tag and tarball sha256
+        id: meta
+        run: |
+          set -euo pipefail
+          TAG="${{ inputs.tag || github.ref_name }}"
+          URL="https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.tar.gz"
+          SHA=$(curl -sSfL "$URL" | shasum -a 256 | awk '{print $1}')
+          {
+            echo "tag=$TAG"
+            echo "url=$URL"
+            echo "sha=$SHA"
+          } >> "$GITHUB_OUTPUT"
+          echo "Resolved $TAG -> $SHA"
+
+      - name: Checkout homebrew tap
+        uses: actions/checkout@v4
+        with:
+          repository: iwen-conf/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: tap
+
+      - name: Update formula
+        working-directory: tap
+        run: |
+          set -euo pipefail
+          FILE=Formula/aitask.rb
+          # Each of url / sha256 appears exactly once in this formula, so
+          # a line-anchored sed is unambiguous.
+          sed -i "s|^  url \".*\"|  url \"${{ steps.meta.outputs.url }}\"|" "$FILE"
+          sed -i "s|^  sha256 \".*\"|  sha256 \"${{ steps.meta.outputs.sha }}\"|" "$FILE"
+          echo "--- updated formula ---"
+          cat "$FILE"
+
+      - name: Commit and push
+        working-directory: tap
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- Formula/aitask.rb; then
+            echo "Formula already up to date for ${{ steps.meta.outputs.tag }}"
+            exit 0
+          fi
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name  "github-actions[bot]"
+          git add Formula/aitask.rb
+          git commit -m "aitask ${{ steps.meta.outputs.tag }}"
+          git push
