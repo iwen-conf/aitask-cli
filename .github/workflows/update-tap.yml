@@ -15,6 +15,12 @@ on:
 permissions:
   contents: read
 
+# Opt JavaScript actions (e.g. actions/checkout) into Node.js 24 ahead of
+# GitHub's 2026-09-16 forced cutover so we don't show a deprecation warning.
+# This only affects the runner-side JS toolchain, not the project (pure Go).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   bump:
     runs-on: ubuntu-latest
