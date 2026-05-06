@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package aitask.v1;
+
+option go_package = "github.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1";
+
+import "aitask/v1/common.proto";
+
+service ContextService {
+  rpc Report(ReportRequest) returns (ReportResponse);
+  rpc CreateHandoff(CreateHandoffRequest) returns (CreateHandoffResponse);
+  rpc GetCurrentHandoff(GetCurrentHandoffRequest) returns (GetCurrentHandoffResponse);
+}
+
+message ContextBudget {
+  int32 max_context_tokens = 1;
+  int32 estimated_used_tokens = 2;
+  string state = 3;
+  double usage_ratio = 4;
+}
+
+message AgentRun {
+  string run_id = 1;
+  ContextBudget context_budget = 2;
+}
+
+message ReportRequest {
+  string project_id = 1;
+  string run_id = 2;
+  int32 reported_input_tokens = 3;
+  int32 reported_output_tokens = 4;
+  int32 max_context_tokens = 5;
+  string source = 6;
+}
+
+message ReportResponse {
+  ContextBudget budget = 1;
+  repeated string warnings = 2;
+  NextAction next_action = 3;
+}
+
+message CreateHandoffRequest {
+  string project_id = 1;
+  string task_id = 2;
+  string reason = 3;
+  string handoff_markdown = 4;
+}
+
+message CreateHandoffResponse {
+  string handoff_id = 1;
+  string openviking_uri = 2;
+  NextAction next_action = 3;
+}
+
+message GetCurrentHandoffRequest {
+  string project_id = 1;
+}
+
+message GetCurrentHandoffResponse {
+  string handoff_id = 1;
+  string task_id = 2;
+  string summary = 3;
+  string handoff_markdown = 4;
+  repeated ContextRef context_refs = 5;
+}

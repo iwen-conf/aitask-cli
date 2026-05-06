@@ -1,0 +1,10 @@
+version: v1
+name: buf.build/iwen-conf/aitask
+
+lint:
+  use:
+    - STANDARD
+
+breaking:
+  use:
+    - FILE

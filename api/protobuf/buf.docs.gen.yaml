@@ -1,0 +1,8 @@
+version: v1
+managed:
+  enabled: false
+plugins:
+  - plugin: buf.build/community/pseudomuto-doc
+    out: api/protobuf/docs
+    opt:
+      - markdown,aitask-proto.md

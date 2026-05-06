@@ -1,0 +1,12 @@
+version: v1
+managed:
+  enabled: false
+plugins:
+  - plugin: buf.build/protocolbuffers/go:v1.36.10
+    out: ../../internal/rpc/gen
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/connectrpc/go:v1.18.1
+    out: ../../internal/rpc/gen
+    opt:
+      - paths=source_relative
