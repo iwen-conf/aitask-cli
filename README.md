@@ -16,7 +16,22 @@ Or build from source:
 go install github.com/iwen-conf/aitask-cli/cmd/aitask@latest
 ```
 
-## Quick start
+## Interactive mode (TUI)
+
+Run `aitask` with no arguments in a terminal to open the interactive menu:
+
+- Test connection (calls `whoami` against the backend)
+- Set backend URL (saved to `~/.aitask/config.json`)
+- Initialize project here (writes `.aitask/` workspace + binds project_id)
+- Change project_id (switches active project in the current repo)
+
+```bash
+aitask
+```
+
+The TUI is skipped when stdin/stdout aren't TTYs, so pipes and CI invocations still see help output.
+
+## Quick start (scripted)
 
 ```bash
 # Point at your backend (default: http://127.0.0.1:8080)
@@ -27,6 +42,8 @@ aitask auth bind --code <code>
 aitask init --project <project_id>
 aitask bootstrap
 ```
+
+The `--server` flag, the `AITASK_SERVER_URL` env var, and `~/.aitask/config.json` are checked in that order; missing values fall back to `http://127.0.0.1:8080`.
 
 ## Commands
 

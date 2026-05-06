@@ -72,6 +72,7 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 		Short:   "AITask CLI",
 		Long:    "AITask CLI for project bootstrap, delegated tasks, memory, skills, and room collaboration.",
 		Version: versionOrDev(a.Version),
+		Args:    cobra.NoArgs,
 		PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
 			format, err := ParseOutputFormat(opts.formatRaw)
 			if err != nil {
@@ -81,6 +82,13 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 			opts.serverURL = normalizeServerURL(opts.serverURL)
 			return nil
 		},
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			// No subcommand: launch TUI on a TTY, otherwise show help.
+			if isInteractiveStdin(a.Stdin) && isInteractiveWriter(a.Stdout) {
+				return RunTUI(env)
+			}
+			return cmd.Help()
+		},
 	}
 	root.SetVersionTemplate(fmt.Sprintf("aitask version %s\n", versionOrDev(a.Version)))
 
@@ -89,7 +97,7 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 	root.SetOut(a.Stdout)
 	root.SetErr(a.Stderr)
 
-	root.PersistentFlags().StringVar(&opts.serverURL, "server", getenvDefault("AITASK_SERVER_URL", defaultServerURL), "AITask backend base URL")
+	root.PersistentFlags().StringVar(&opts.serverURL, "server", resolveDefaultServerURL(), "AITask backend base URL")
 	root.PersistentFlags().StringVar(&opts.formatRaw, "format", string(FormatPrompt), "output format: brief|prompt|json|proto")
 	root.PersistentFlags().DurationVar(&opts.timeout, "timeout", 15*time.Second, "request timeout")
 	root.PersistentFlags().StringVar(&opts.projectID, "project", "", "override project_id for project-scoped commands")
