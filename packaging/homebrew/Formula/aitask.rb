@@ -8,8 +8,6 @@ class Aitask < Formula
 
   depends_on "go" => :build
 
-  conflicts_with "aitask-watch", because: "both install the aitask-watch binary"
-
   def install
     ldflags = "-s -w -X main.version=v#{version}"
     {
