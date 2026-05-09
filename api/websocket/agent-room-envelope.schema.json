@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aitask.local/schemas/agent-room-envelope.schema.json",
+  "title": "Agent Room Event Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "eventType", "projectId", "roomId", "sender", "payload", "createdAt"],
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "pattern": "^evt_[A-Za-z0-9]+$"
+    },
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "room.connected",
+        "room.member_online",
+        "room.member_offline",
+        "room.message",
+        "task.updated",
+        "context.handoff_created",
+        "system.notice"
+      ]
+    },
+    "projectId": {
+      "type": "string",
+      "pattern": "^prj_[A-Za-z0-9]+$"
+    },
+    "roomId": {
+      "type": "string",
+      "pattern": "^room_[A-Za-z0-9]+$"
+    },
+    "sender": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["operator", "agent", "system"]
+        },
+        "operatorLabel": {
+          "type": "string"
+        },
+        "agentId": {
+          "type": "string"
+        },
+        "agentType": {
+          "type": "string",
+          "enum": ["claude-code", "codex", "gemini", "system"]
+        }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

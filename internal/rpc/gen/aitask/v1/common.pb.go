@@ -553,7 +553,9 @@ const file_aitask_v1_common_proto_rawDesc = "" +
 	"NextAction\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x18\n" +
-	"\acommand\x18\x03 \x01(\tR\acommandBEZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1b\x06proto3"
+	"\acommand\x18\x03 \x01(\tR\acommandB\xa6\x01\n" +
+	"\rcom.aitask.v1B\vCommonProtoP\x01ZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1\xa2\x02\x03AXX\xaa\x02\tAitask.V1\xca\x02\tAitask\\V1\xe2\x02\x15Aitask\\V1\\GPBMetadata\xea\x02\n" +
+	"Aitask::V1b\x06proto3"
 
 var (
 	file_aitask_v1_common_proto_rawDescOnce sync.Once

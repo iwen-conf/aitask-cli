@@ -210,6 +210,17 @@ func (c *Client) PatchREST(ctx context.Context, requestPath string, body any) (m
 	return out, nil
 }
 
+func (c *Client) PutREST(ctx context.Context, requestPath string, body any) (map[string]any, error) {
+	var out map[string]any
+	if err := c.requestREST(ctx, http.MethodPut, requestPath, nil, body, &out); err != nil {
+		return nil, err
+	}
+	if out == nil {
+		return map[string]any{}, nil
+	}
+	return out, nil
+}
+
 func (c *Client) requestREST(ctx context.Context, method string, requestPath string, query map[string]string, body any, out any) error {
 	return c.withRetry(ctx, func(ctx context.Context) error {
 		reqURL, err := url.Parse(c.serverURL)

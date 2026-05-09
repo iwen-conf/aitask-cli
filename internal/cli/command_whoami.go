@@ -23,9 +23,14 @@ func newWhoAmICommand(env *CommandEnv) *cobra.Command {
 				return err
 			}
 			identity := res.GetIdentity()
-			prompt := fmt.Sprintf("# Agent Identity\n\n- Agent ID: `%s`\n- Type: `%s`\n- Role: `%s`\n- Scopes: %s\n- Allowed Projects: %s", identity.GetAgentId(), identity.GetAgentType(), identity.GetRole(), strings.Join(identity.GetScopes(), ", "), strings.Join(identity.GetAllowedProjects(), ", "))
-			brief := fmt.Sprintf("%s (%s)", identity.GetAgentId(), identity.GetRole())
+			profile := env.opts.profile
+			if profile == "" {
+				profile = DefaultProfileName
+			}
+			prompt := fmt.Sprintf("# Agent Identity\n\n- Profile: `%s`\n- Agent ID: `%s`\n- Type: `%s`\n- Role: `%s`\n- Scopes: %s\n- Allowed Projects: %s", profile, identity.GetAgentId(), identity.GetAgentType(), identity.GetRole(), strings.Join(identity.GetScopes(), ", "), strings.Join(identity.GetAllowedProjects(), ", "))
+			brief := fmt.Sprintf("%s (%s) [profile=%s]", identity.GetAgentId(), identity.GetRole(), profile)
 			jsonOut := map[string]any{
+				"profile": profile,
 				"identity": map[string]any{
 					"agentId":         identity.GetAgentId(),
 					"agentType":       identity.GetAgentType(),

@@ -1,0 +1,17 @@
+# Generates Go + ConnectRPC code for the cli/ module.
+# Regenerate after changing any .proto:
+#   cd api/protobuf && buf generate --template buf.gen.cli.yaml
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/iwen-conf/aitask-cli/internal/rpc/gen
+plugins:
+  - plugin: buf.build/protocolbuffers/go:v1.36.10
+    out: ../../cli/internal/rpc/gen
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/connectrpc/go:v1.18.1
+    out: ../../cli/internal/rpc/gen
+    opt:
+      - paths=source_relative

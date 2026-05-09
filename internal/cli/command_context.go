@@ -13,15 +13,33 @@ import (
 const defaultContextMaxTokens = 200_000
 
 func newContextCommand(env *CommandEnv) *cobra.Command {
+	var threadID string
+	var eventID string
 	cmd := &cobra.Command{
 		Use:   "context",
 		Short: "Context lifecycle operations",
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			if strings.TrimSpace(threadID) != "" && strings.TrimSpace(eventID) != "" {
+				return fmt.Errorf("--thread and --event are mutually exclusive")
+			}
+			if strings.TrimSpace(eventID) != "" {
+				return runContextEvent(cmd.Context(), env, eventID)
+			}
+			if strings.TrimSpace(threadID) != "" {
+				return runContextThread(cmd.Context(), env, threadID)
+			}
+			return cmd.Help()
+		},
 	}
+	cmd.Flags().StringVar(&threadID, "thread", "", "render local context for a thread")
+	cmd.Flags().StringVar(&eventID, "event", "", "render local context and memory recall for an event")
 	cmd.AddCommand(
 		newContextStatusCommand(env),
 		newContextReportCommand(env),
 		newContextCompactCommand(env),
 		newContextHandoffCommand(env),
+		newContextEventCommand(env),
+		newContextThreadCommand(env),
 	)
 	return cmd
 }

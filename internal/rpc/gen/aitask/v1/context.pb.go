@@ -585,7 +585,9 @@ const file_aitask_v1_context_proto_rawDesc = "" +
 	"\x0eContextService\x12=\n" +
 	"\x06Report\x12\x18.aitask.v1.ReportRequest\x1a\x19.aitask.v1.ReportResponse\x12R\n" +
 	"\rCreateHandoff\x12\x1f.aitask.v1.CreateHandoffRequest\x1a .aitask.v1.CreateHandoffResponse\x12^\n" +
-	"\x11GetCurrentHandoff\x12#.aitask.v1.GetCurrentHandoffRequest\x1a$.aitask.v1.GetCurrentHandoffResponseBEZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1b\x06proto3"
+	"\x11GetCurrentHandoff\x12#.aitask.v1.GetCurrentHandoffRequest\x1a$.aitask.v1.GetCurrentHandoffResponseB\xa7\x01\n" +
+	"\rcom.aitask.v1B\fContextProtoP\x01ZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1\xa2\x02\x03AXX\xaa\x02\tAitask.V1\xca\x02\tAitask\\V1\xe2\x02\x15Aitask\\V1\\GPBMetadata\xea\x02\n" +
+	"Aitask::V1b\x06proto3"
 
 var (
 	file_aitask_v1_context_proto_rawDescOnce sync.Once

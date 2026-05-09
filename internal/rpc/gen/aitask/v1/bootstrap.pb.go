@@ -239,7 +239,9 @@ const file_aitask_v1_bootstrap_proto_rawDesc = "" +
 	"\vnext_action\x18\a \x01(\v2\x15.aitask.v1.NextActionR\n" +
 	"nextAction2Z\n" +
 	"\x10BootstrapService\x12F\n" +
-	"\tBootstrap\x12\x1b.aitask.v1.BootstrapRequest\x1a\x1c.aitask.v1.BootstrapResponseBEZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1b\x06proto3"
+	"\tBootstrap\x12\x1b.aitask.v1.BootstrapRequest\x1a\x1c.aitask.v1.BootstrapResponseB\xa9\x01\n" +
+	"\rcom.aitask.v1B\x0eBootstrapProtoP\x01ZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1\xa2\x02\x03AXX\xaa\x02\tAitask.V1\xca\x02\tAitask\\V1\xe2\x02\x15Aitask\\V1\\GPBMetadata\xea\x02\n" +
+	"Aitask::V1b\x06proto3"
 
 var (
 	file_aitask_v1_bootstrap_proto_rawDescOnce sync.Once

@@ -110,7 +110,10 @@ const file_aitask_v1_agent_proto_rawDesc = "" +
 	"\x0eWhoAmIResponse\x124\n" +
 	"\bidentity\x18\x01 \x01(\v2\x18.aitask.v1.AgentIdentityR\bidentity2M\n" +
 	"\fAgentService\x12=\n" +
-	"\x06WhoAmI\x12\x18.aitask.v1.WhoAmIRequest\x1a\x19.aitask.v1.WhoAmIResponseBEZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1b\x06proto3"
+	"\x06WhoAmI\x12\x18.aitask.v1.WhoAmIRequest\x1a\x19.aitask.v1.WhoAmIResponseB\xa5\x01\n" +
+	"\rcom.aitask.v1B\n" +
+	"AgentProtoP\x01ZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1\xa2\x02\x03AXX\xaa\x02\tAitask.V1\xca\x02\tAitask\\V1\xe2\x02\x15Aitask\\V1\\GPBMetadata\xea\x02\n" +
+	"Aitask::V1b\x06proto3"
 
 var (
 	file_aitask_v1_agent_proto_rawDescOnce sync.Once

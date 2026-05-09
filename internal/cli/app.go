@@ -20,11 +20,13 @@ type App struct {
 }
 
 type globalOptions struct {
-	serverURL string
-	formatRaw string
-	format    OutputFormat
-	timeout   time.Duration
-	projectID string
+	serverURL  string
+	formatRaw  string
+	format     OutputFormat
+	timeout    time.Duration
+	projectID  string
+	profileRaw string // exact value passed via --profile (may be empty when unset)
+	profile    string // resolved profile name after PersistentPreRunE
 }
 
 type CommandEnv struct {
@@ -80,6 +82,10 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 			}
 			opts.format = format
 			opts.serverURL = normalizeServerURL(opts.serverURL)
+			opts.profile, err = resolveEffectiveProfile(opts.profileRaw)
+			if err != nil {
+				return err
+			}
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -101,6 +107,7 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 	root.PersistentFlags().StringVar(&opts.formatRaw, "format", string(FormatPrompt), "output format: brief|prompt|json|proto")
 	root.PersistentFlags().DurationVar(&opts.timeout, "timeout", 15*time.Second, "request timeout")
 	root.PersistentFlags().StringVar(&opts.projectID, "project", "", "override project_id for project-scoped commands")
+	root.PersistentFlags().StringVar(&opts.profileRaw, "profile", "", "agent identity profile (default: $AITASK_PROFILE > config.active_profile > \"default\")")
 
 	root.AddCommand(
 		newVersionCommand(env),
@@ -111,9 +118,23 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 		newBootstrapCommand(env),
 		newContextCommand(env),
 		newRunCommand(env),
+		newSearchCommand(env),
+		newSummaryCommand(env),
 		newTaskCommand(env),
 		newMemoryCommand(env),
+		newOpenVikingCommand(env),
 		newSkillCommand(env),
+		newEventsCommand(env),
+		newWorkerCommand(env),
+		newWatchCommand(env),
+		newRenderPromptCommand(env),
+		newInboxCommand(env),
+		newLatestCommand(env),
+		newThreadCommand(env),
+		newInboxStatusCommand(env, "ack"),
+		newInboxStatusCommand(env, "done"),
+		newInboxStatusCommand(env, "fail"),
+		newInboxStatusCommand(env, "skip"),
 		newRoomCommand(env),
 	)
 
@@ -129,7 +150,7 @@ func (e *CommandEnv) context() (context.Context, context.CancelFunc) {
 }
 
 func (e *CommandEnv) clientWithToken(required bool) (*Client, string, error) {
-	token, err := e.tokenStore.Load(e.opts.serverURL)
+	token, err := e.tokenStore.Load(e.opts.serverURL, e.opts.profile)
 	if err != nil {
 		if required {
 			return nil, "", err

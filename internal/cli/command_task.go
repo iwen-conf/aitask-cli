@@ -453,15 +453,12 @@ func newTaskResumeCommand(env *CommandEnv) *cobra.Command {
 	var runID string
 	cmd := &cobra.Command{
 		Use:   "resume <task_id>",
-		Short: "Resume task from handoff",
+		Short: "Resume task from handoff or heartbeat-timeout recovery",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(_ *cobra.Command, args []string) error {
 			cfg, err := env.resolveProjectConfig(true)
 			if err != nil {
 				return err
-			}
-			if strings.TrimSpace(handoffID) == "" {
-				return fmt.Errorf("--handoff is required")
 			}
 			if strings.TrimSpace(runID) == "" {
 				runID = ids.New(ids.PrefixRun)
@@ -476,11 +473,15 @@ func newTaskResumeCommand(env *CommandEnv) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			prompt := fmt.Sprintf("# Task Resumed\n\nTask `%s` resumed with run `%s`.", strings.TrimSpace(args[0]), runID)
+			mode := "heartbeat-timeout recovery"
+			if strings.TrimSpace(handoffID) != "" {
+				mode = "handoff"
+			}
+			prompt := fmt.Sprintf("# Task Resumed\n\nTask `%s` resumed with run `%s` via %s.", strings.TrimSpace(args[0]), runID, mode)
 			return env.printer().Print(RenderData{Brief: "resumed", Prompt: prompt, JSON: payload})
 		},
 	}
-	cmd.Flags().StringVar(&handoffID, "handoff", "", "handoff ID")
+	cmd.Flags().StringVar(&handoffID, "handoff", "", "handoff ID (optional for heartbeat-timeout recovery)")
 	cmd.Flags().StringVar(&runID, "run", "", "new run ID")
 	return cmd
 }

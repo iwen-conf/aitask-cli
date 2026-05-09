@@ -651,7 +651,9 @@ const file_aitask_v1_task_proto_rawDesc = "" +
 	"\x0eGetCurrentTask\x12 .aitask.v1.GetCurrentTaskRequest\x1a!.aitask.v1.GetCurrentTaskResponse\x12F\n" +
 	"\tStartTask\x12\x1b.aitask.v1.StartTaskRequest\x1a\x1c.aitask.v1.StartTaskResponse\x12I\n" +
 	"\n" +
-	"SubmitTask\x12\x1c.aitask.v1.SubmitTaskRequest\x1a\x1d.aitask.v1.SubmitTaskResponseBEZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1b\x06proto3"
+	"SubmitTask\x12\x1c.aitask.v1.SubmitTaskRequest\x1a\x1d.aitask.v1.SubmitTaskResponseB\xa4\x01\n" +
+	"\rcom.aitask.v1B\tTaskProtoP\x01ZCgithub.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1\xa2\x02\x03AXX\xaa\x02\tAitask.V1\xca\x02\tAitask\\V1\xe2\x02\x15Aitask\\V1\\GPBMetadata\xea\x02\n" +
+	"Aitask::V1b\x06proto3"
 
 var (
 	file_aitask_v1_task_proto_rawDescOnce sync.Once

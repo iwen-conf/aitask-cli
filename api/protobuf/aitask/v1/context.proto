@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package aitask.v1;
 
-option go_package = "github.com/iwen-conf/aitask-cli/internal/rpc/gen/aitask/v1;aitaskv1";
+option go_package = "gitea.ezer.heiyu.space/iwen-conf/aitask/core/internal/rpc/gen/aitask/v1;aitaskv1";
 
 import "aitask/v1/common.proto";
 
