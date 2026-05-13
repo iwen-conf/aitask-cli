@@ -104,6 +104,10 @@ type Task struct {
 	RequiredModel     string                 `protobuf:"bytes,11,opt,name=required_model,json=requiredModel,proto3" json:"required_model,omitempty"`
 	OutputContract    string                 `protobuf:"bytes,12,opt,name=output_contract,json=outputContract,proto3" json:"output_contract,omitempty"`
 	Priority          int32                  `protobuf:"varint,13,opt,name=priority,proto3" json:"priority,omitempty"`
+	Goal              string                 `protobuf:"bytes,14,opt,name=goal,proto3" json:"goal,omitempty"`
+	Description       string                 `protobuf:"bytes,15,opt,name=description,proto3" json:"description,omitempty"`
+	Inputs            string                 `protobuf:"bytes,16,opt,name=inputs,proto3" json:"inputs,omitempty"`
+	Constraints       string                 `protobuf:"bytes,17,opt,name=constraints,proto3" json:"constraints,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -227,6 +231,34 @@ func (x *Task) GetPriority() int32 {
 		return x.Priority
 	}
 	return 0
+}
+
+func (x *Task) GetGoal() string {
+	if x != nil {
+		return x.Goal
+	}
+	return ""
+}
+
+func (x *Task) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Task) GetInputs() string {
+	if x != nil {
+		return x.Inputs
+	}
+	return ""
+}
+
+func (x *Task) GetConstraints() string {
+	if x != nil {
+		return x.Constraints
+	}
+	return ""
 }
 
 type GetCurrentTaskRequest struct {
@@ -598,7 +630,7 @@ const file_aitask_v1_task_proto_rawDesc = "" +
 	"\x11delegated_by_type\x18\x01 \x01(\tR\x0fdelegatedByType\x12=\n" +
 	"\x1bdelegated_by_operator_label\x18\x02 \x01(\tR\x18delegatedByOperatorLabel\x121\n" +
 	"\x15delegated_by_agent_id\x18\x03 \x01(\tR\x12delegatedByAgentId\x12!\n" +
-	"\fdelegated_at\x18\x04 \x01(\tR\vdelegatedAt\"\xfd\x03\n" +
+	"\fdelegated_at\x18\x04 \x01(\tR\vdelegatedAt\"\xed\x04\n" +
 	"\x04Task\x12\x17\n" +
 	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x1d\n" +
 	"\n" +
@@ -616,7 +648,11 @@ const file_aitask_v1_task_proto_rawDesc = "" +
 	" \x03(\v2\x13.aitask.v1.SkillRefR\x0erequiredSkills\x12%\n" +
 	"\x0erequired_model\x18\v \x01(\tR\rrequiredModel\x12'\n" +
 	"\x0foutput_contract\x18\f \x01(\tR\x0eoutputContract\x12\x1a\n" +
-	"\bpriority\x18\r \x01(\x05R\bpriority\"6\n" +
+	"\bpriority\x18\r \x01(\x05R\bpriority\x12\x12\n" +
+	"\x04goal\x18\x0e \x01(\tR\x04goal\x12 \n" +
+	"\vdescription\x18\x0f \x01(\tR\vdescription\x12\x16\n" +
+	"\x06inputs\x18\x10 \x01(\tR\x06inputs\x12 \n" +
+	"\vconstraints\x18\x11 \x01(\tR\vconstraints\"6\n" +
 	"\x15GetCurrentTaskRequest\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\"u\n" +

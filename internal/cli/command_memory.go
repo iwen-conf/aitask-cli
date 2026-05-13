@@ -82,6 +82,7 @@ func newMemoryCommand(env *CommandEnv) *cobra.Command {
 			target, _ := cmd.Flags().GetString("target")
 			title, _ := cmd.Flags().GetString("title")
 			relatedTaskID, _ := cmd.Flags().GetString("task")
+			autoSync, _ := cmd.Flags().GetBool("auto-sync")
 			if strings.TrimSpace(from) == "" {
 				return fmt.Errorf("--from is required")
 			}
@@ -101,7 +102,7 @@ func newMemoryCommand(env *CommandEnv) *cobra.Command {
 			}
 			ctx, cancel := env.context()
 			defer cancel()
-			payload, err := client.PostREST(ctx, "/api/projects/"+cfg.ProjectID+"/memory/write", map[string]any{"target": target, "title": title, "content": content, "relatedTaskId": emptyAsNil(relatedTaskID)})
+			payload, err := client.PostREST(ctx, "/api/projects/"+cfg.ProjectID+"/memory/write", map[string]any{"target": target, "title": title, "content": content, "relatedTaskId": emptyAsNil(relatedTaskID), "autoSync": autoSync})
 			if err != nil {
 				return err
 			}
@@ -113,6 +114,7 @@ func newMemoryCommand(env *CommandEnv) *cobra.Command {
 	writeCmd.Flags().String("target", "", "memory target (decisions/summary/resources)")
 	writeCmd.Flags().String("title", "", "memory title")
 	writeCmd.Flags().String("task", "", "related task id")
+	writeCmd.Flags().Bool("auto-sync", false, "allow OpenViking to index the write asynchronously")
 
 	cmd.AddCommand(searchCmd, readCmd, writeCmd)
 	return cmd

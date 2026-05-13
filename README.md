@@ -2,6 +2,10 @@
 
 AI Agent project orchestrator CLI for the AITask platform.
 
+This is the in-repo source of the CLI. The published artifact lives at
+[github.com/iwen-conf/aitask-cli](https://github.com/iwen-conf/aitask-cli)
+and is kept in sync from this directory.
+
 ## Install (end users)
 
 ```bash
@@ -29,6 +33,7 @@ brew install iwen-conf/tap/aitask
 ## Build (local dev)
 
 ```bash
+cd cli
 mkdir -p dist
 go build -o dist/aitask ./aitask
 go build -o dist/aitask-watch ./aitask-watch
@@ -113,7 +118,7 @@ aitask context thread thr_123
 ## Layout
 
 ```
-.
+cli/
 ├── aitask/              umbrella CLI: auth, task, room, inbox query, memory, search, ...
 ├── aitask-watch/        events.ndjson subscriber daemon (formerly `aitask events`)
 ├── aitask-worker/       SQLite indexer + OpenViking memory sync daemon
@@ -125,11 +130,10 @@ aitask context thread thr_123
 ├── internal/agentwatch/ agent watcher core + prompt rendering
 ├── internal/openviking/ ovcli.conf loader
 ├── internal/rpc/gen/    protobuf + ConnectRPC generated code
-├── api/protobuf/        protobuf sources for the CLI surface
 └── pkg/ids/             ULID helpers
 ```
 
-Each top-level binary directory contains its own `skills/SKILL.md`.
+Skill manifests for `aitask`, `aitask-watch`, `aitask-worker`, `aitask-agent-watch`, and `aitask-inbox` live in a separate repo: <https://github.com/iwen-conf/aitask-cli-skill>. Protobuf sources live at `../api/protobuf/`.
 
 ## License
 
@@ -190,8 +194,7 @@ aitask-watch
 
 ### Component Docs
 
-- `internal/cli/aitask-watch.md` — `aitask-watch` and runtime modes.
-- `internal/state/README.md` — local files, `events.ndjson`, `state.db`, cursors, schema.
-- `internal/inbox/skills/SKILL.md` — inbox query and status command contract.
-- `internal/worker/skills/SKILL.md` — worker ingest, sync, summary contract.
-- `internal/agentwatch/skills/SKILL.md` — per-Agent watcher and runner contract.
+- `cli/internal/cli/aitask-watch.md` — `aitask-watch` and runtime modes.
+- `cli/internal/state/README.md` — local files, `events.ndjson`, `state.db`, cursors, schema.
+- Skill manifests (inbox / worker / agent-watch / watch / aitask) — <https://github.com/iwen-conf/aitask-cli-skill>.
+- `integrations/openviking/README.md` — OpenViking boundary and integration shape.

@@ -384,6 +384,9 @@ func newTaskCreateCommand(env *CommandEnv) *cobra.Command {
 	var parent string
 	var title string
 	var description string
+	var goal string
+	var inputs string
+	var constraints string
 	var target string
 	var skill string
 	var model string
@@ -419,6 +422,9 @@ func newTaskCreateCommand(env *CommandEnv) *cobra.Command {
 			body := map[string]any{
 				"title":               title,
 				"description":         description,
+				"goal":                emptyAsNil(goal),
+				"inputs":              emptyAsNil(inputs),
+				"constraints":         emptyAsNil(constraints),
 				"parentTaskId":        emptyAsNil(parent),
 				"delegateToAgentId":   emptyAsNil(delegateTo),
 				"delegateToAgentType": emptyAsNil(delegateType),
@@ -439,11 +445,14 @@ func newTaskCreateCommand(env *CommandEnv) *cobra.Command {
 	}
 	cmd.Flags().StringVar(&parent, "parent", "", "parent task ID")
 	cmd.Flags().StringVar(&title, "title", "", "task title")
-	cmd.Flags().StringVar(&description, "description", "", "task description")
+	cmd.Flags().StringVar(&description, "description", "", "task background / context")
+	cmd.Flags().StringVar(&goal, "goal", "", "task goal (single sentence success criterion)")
+	cmd.Flags().StringVar(&inputs, "inputs", "", "task inputs (resources, files, upstream APIs)")
+	cmd.Flags().StringVar(&constraints, "constraints", "", "task constraints (what not to touch, compatibility limits)")
 	cmd.Flags().StringVar(&target, "target", "", "target agent type or id (e.g. codex or agt_xxx)")
 	cmd.Flags().StringVar(&skill, "skill", "", "required skill")
 	cmd.Flags().StringVar(&model, "model", "", "required model")
-	cmd.Flags().StringVar(&outputContract, "output-contract", "", "output contract markdown")
+	cmd.Flags().StringVar(&outputContract, "output-contract", "", "acceptance criteria / output contract markdown")
 	cmd.Flags().IntVar(&priority, "priority", 0, "priority")
 	return cmd
 }
@@ -517,6 +526,7 @@ func renderCurrentTaskPrompt(task *aitaskv1.Task) string {
 	if strings.TrimSpace(delegatedBy) == "" {
 		delegatedBy = task.GetDelegation().GetDelegatedByType()
 	}
+	structured := renderTaskStructuredSections(task)
 	return fmt.Sprintf(`# Current Task
 
 Task ID: %s
@@ -524,7 +534,7 @@ Title: %s
 Skill: %s
 Delegated By: %s
 Active Run: %s
-
+%s
 ## Context
 
 Read:
@@ -543,7 +553,32 @@ Then submit:
 `+"```bash"+`
 aitask task submit %s --from .aitask/result.md
 `+"```"+`
-`, task.GetTaskId(), task.GetTitle(), skill, delegatedBy, activeRun, skill, task.GetTaskId())
+`, task.GetTaskId(), task.GetTitle(), skill, delegatedBy, activeRun, structured, skill, task.GetTaskId())
+}
+
+// renderTaskStructuredSections emits the goal / background / inputs /
+// constraints / acceptance blocks when they are non-empty. Each section starts
+// with a leading newline so callers can drop the return value directly into
+// templated output without worrying about spacing when all fields are blank.
+func renderTaskStructuredSections(task *aitaskv1.Task) string {
+	var b strings.Builder
+	appendSection := func(heading string, body string) {
+		body = strings.TrimSpace(body)
+		if body == "" {
+			return
+		}
+		b.WriteString("\n## ")
+		b.WriteString(heading)
+		b.WriteString("\n\n")
+		b.WriteString(body)
+		b.WriteString("\n")
+	}
+	appendSection("Goal", task.GetGoal())
+	appendSection("Background", task.GetDescription())
+	appendSection("Inputs", task.GetInputs())
+	appendSection("Constraints", task.GetConstraints())
+	appendSection("Acceptance Criteria", task.GetOutputContract())
+	return b.String()
 }
 
 func currentTaskToJSON(res *aitaskv1.GetCurrentTaskResponse) map[string]any {
@@ -563,6 +598,10 @@ func currentTaskToJSON(res *aitaskv1.GetCurrentTaskResponse) map[string]any {
 			"requiredSkills":  skills,
 			"requiredModel":   task.GetRequiredModel(),
 			"outputContract":  task.GetOutputContract(),
+			"goal":            task.GetGoal(),
+			"description":     task.GetDescription(),
+			"inputs":          task.GetInputs(),
+			"constraints":     task.GetConstraints(),
 		}
 	}
 	return out
@@ -582,7 +621,35 @@ func renderTaskListPrompt(title string, items []any) string {
 }
 
 func renderTaskDetailPrompt(task map[string]any) string {
-	return fmt.Sprintf("# Task Detail\n\n- Task ID: `%s`\n- Title: %s\n- Status: `%s`\n- Assignee: `%s`\n- Active Run: `%s`\n- Priority: `%d`\n\n## Output Contract\n\n%s", mapString(task, "taskId"), mapString(task, "title"), mapString(task, "status"), mapString(task, "assigneeAgentId"), mapString(task, "activeRunId"), mapInt(task, "priority"), fallback(mapString(task, "outputContract"), "(none)"))
+	header := fmt.Sprintf("# Task Detail\n\n- Task ID: `%s`\n- Title: %s\n- Status: `%s`\n- Assignee: `%s`\n- Active Run: `%s`\n- Priority: `%d`", mapString(task, "taskId"), mapString(task, "title"), mapString(task, "status"), mapString(task, "assigneeAgentId"), mapString(task, "activeRunId"), mapInt(task, "priority"))
+	body := renderTaskStructuredSectionsFromMap(task)
+	if strings.TrimSpace(body) == "" {
+		// fallback to the legacy output-contract block when no structured field is filled.
+		return header + "\n\n## Acceptance Criteria\n\n" + fallback(mapString(task, "outputContract"), "(none)")
+	}
+	return header + body
+}
+
+// renderTaskStructuredSectionsFromMap mirrors renderTaskStructuredSections but
+// works against the loose map[string]any payload returned by REST endpoints.
+func renderTaskStructuredSectionsFromMap(task map[string]any) string {
+	var b strings.Builder
+	appendSection := func(heading, body string) {
+		body = strings.TrimSpace(body)
+		if body == "" {
+			return
+		}
+		b.WriteString("\n\n## ")
+		b.WriteString(heading)
+		b.WriteString("\n\n")
+		b.WriteString(body)
+	}
+	appendSection("Goal", mapString(task, "goal"))
+	appendSection("Background", mapString(task, "description"))
+	appendSection("Inputs", mapString(task, "inputs"))
+	appendSection("Constraints", mapString(task, "constraints"))
+	appendSection("Acceptance Criteria", mapString(task, "outputContract"))
+	return b.String()
 }
 
 func parseArtifactFlags(values []string) ([]*aitaskv1.ArtifactRef, error) {

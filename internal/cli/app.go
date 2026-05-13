@@ -75,7 +75,7 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 		Long:    "AITask CLI for project bootstrap, delegated tasks, memory, skills, and room collaboration.",
 		Version: versionOrDev(a.Version),
 		Args:    cobra.NoArgs,
-		PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
+		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			format, err := ParseOutputFormat(opts.formatRaw)
 			if err != nil {
 				return err
@@ -86,6 +86,7 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 			if err != nil {
 				return err
 			}
+			maybeStartWatchDaemon(cmd)
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, _ []string) error {
