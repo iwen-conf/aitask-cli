@@ -24,7 +24,6 @@ func TestStoreOpenerUsesEnvPathAndMigrates(t *testing.T) {
 	assertTableExists(t, db, "agent_inbox")
 	assertTableExists(t, db, "global_feed")
 	assertTableExists(t, db, "cursors")
-	assertTableExists(t, db, "memory_sync")
 	assertTableExists(t, db, "summaries")
 	assertTableExists(t, db, "schema_meta")
 	assertSchemaVersion(t, db, "2")

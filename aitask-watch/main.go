@@ -6,9 +6,8 @@
 // auto-launch this binary in a tmux session so their SessionStart prompts can
 // reflect the latest project events.
 //
-// This binary owns event collection only. It does not write to state.db, sync
-// to OpenViking, or wake other agents — those are aitask-worker and
-// aitask-agent-watch.
+// This binary owns event collection only. It does not write to state.db
+// or wake other agents — those are aitask-worker and aitask-agent-watch.
 package main
 
 import (

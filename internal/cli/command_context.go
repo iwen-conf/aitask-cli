@@ -36,7 +36,6 @@ func newContextCommand(env *CommandEnv) *cobra.Command {
 	cmd.AddCommand(
 		newContextStatusCommand(env),
 		newContextReportCommand(env),
-		newContextCompactCommand(env),
 		newContextHandoffCommand(env),
 		newContextEventCommand(env),
 		newContextThreadCommand(env),
@@ -190,46 +189,6 @@ func newContextReportCommand(env *CommandEnv) *cobra.Command {
 	return cmd
 }
 
-func newContextCompactCommand(env *CommandEnv) *cobra.Command {
-	return &cobra.Command{
-		Use:   "compact",
-		Short: "Compact context into refs-only output",
-		RunE: func(_ *cobra.Command, _ []string) error {
-			cfg, err := env.resolveProjectConfig(true)
-			if err != nil {
-				return err
-			}
-			client, _, err := env.clientWithToken(true)
-			if err != nil {
-				return err
-			}
-			ctx, cancel := env.context()
-			defer cancel()
-
-			payload, err := client.GetREST(ctx, "/api/projects/"+cfg.ProjectID+"/memory/search", map[string]string{
-				"q":        "project summary decisions blockers handoff refs",
-				"budget":   "1200",
-				"refsOnly": "true",
-			})
-			if err != nil {
-				safeWriteLastSync(cfg.AITaskDir, "context compact", "offline", false)
-				return err
-			}
-			refsPayload := compactToRefs(payload)
-			if err := writeStateJSON(cfg.AITaskDir, stateContextUsagePB, refsPayload); err != nil {
-				return err
-			}
-			safeWriteLastSync(cfg.AITaskDir, "context compact", "online", false)
-
-			return env.printer().Print(RenderData{
-				Brief:  fmt.Sprintf("%d refs", len(asSlice(refsPayload["refs"]))),
-				Prompt: renderContextCompactPrompt(refsPayload),
-				JSON:   refsPayload,
-			})
-		},
-	}
-}
-
 func newContextHandoffCommand(env *CommandEnv) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "handoff",
@@ -350,10 +309,9 @@ func newContextHandoffSubmitCommand(env *CommandEnv) *cobra.Command {
 			}
 
 			jsonOut := map[string]any{
-				"projectId":     cfg.ProjectID,
-				"taskId":        resolvedTaskID,
-				"handoffId":     res.GetHandoffId(),
-				"openvikingUri": res.GetOpenvikingUri(),
+				"projectId": cfg.ProjectID,
+				"taskId":    resolvedTaskID,
+				"handoffId": res.GetHandoffId(),
 				"nextAction": map[string]any{
 					"type":    res.GetNextAction().GetType(),
 					"message": res.GetNextAction().GetMessage(),
@@ -365,7 +323,7 @@ func newContextHandoffSubmitCommand(env *CommandEnv) *cobra.Command {
 			}
 			safeWriteLastSync(cfg.AITaskDir, "context handoff submit", "online", false)
 
-			prompt := fmt.Sprintf("# Handoff Submitted\n\nHandoff ID: `%s`\nTask: `%s`\nOpenViking URI: `%s`\n\nNext:\n\n```bash\n%s\n```", res.GetHandoffId(), resolvedTaskID, res.GetOpenvikingUri(), res.GetNextAction().GetCommand())
+			prompt := fmt.Sprintf("# Handoff Submitted\n\nHandoff ID: `%s`\nTask: `%s`\n\nNext:\n\n```bash\n%s\n```", res.GetHandoffId(), resolvedTaskID, res.GetNextAction().GetCommand())
 			return env.printer().Print(RenderData{Brief: res.GetHandoffId(), Prompt: prompt, JSON: jsonOut, Proto: res})
 		},
 	}
@@ -438,36 +396,6 @@ func renderContextReportPrompt(payload map[string]any) string {
 		mapFloat64(budget, "usageRatio")*100,
 		fallback(mapString(nextAction, "command"), "aitask task current"),
 	)
-}
-
-func compactToRefs(payload map[string]any) map[string]any {
-	items := asSlice(payload["items"])
-	refs := make([]map[string]any, 0, len(items))
-	for _, item := range items {
-		entry := asMap(item)
-		refs = append(refs, map[string]any{
-			"uri":             mapString(entry, "uri"),
-			"title":           mapString(entry, "title"),
-			"estimatedTokens": mapInt(entry, "estimatedTokens"),
-		})
-	}
-	return map[string]any{
-		"refs": refs,
-	}
-}
-
-func renderContextCompactPrompt(payload map[string]any) string {
-	refs := asSlice(payload["refs"])
-	lines := []string{"# Context Compact Refs", ""}
-	if len(refs) == 0 {
-		lines = append(lines, "(empty)")
-		return strings.Join(lines, "\n")
-	}
-	for _, item := range refs {
-		entry := asMap(item)
-		lines = append(lines, fmt.Sprintf("- %s (%s)", mapString(entry, "title"), mapString(entry, "uri")))
-	}
-	return strings.Join(lines, "\n")
 }
 
 func contextRefsToJSON(items []*aitaskv1.ContextRef) []map[string]any {

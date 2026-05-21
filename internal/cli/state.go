@@ -17,24 +17,18 @@ const (
 )
 
 type ProjectConfig struct {
-	RootDir               string
-	AITaskDir             string
-	SourceFile            string
-	ProjectID             string
-	ProjectName           string
-	OpenVikingRoot        string
-	OpenVikingNamespace   string
-	OpenVikingWorkspaceID string
-	RoomEnabled           bool
+	RootDir     string
+	AITaskDir   string
+	SourceFile  string
+	ProjectID   string
+	ProjectName string
+	RoomEnabled bool
 }
 
 type ProjectDocValues struct {
-	ProjectID             string
-	ProjectName           string
-	OpenVikingRoot        string
-	OpenVikingNamespace   string
-	OpenVikingWorkspaceID string
-	RoomEnabled           bool
+	ProjectID   string
+	ProjectName string
+	RoomEnabled bool
 }
 
 type BoundProject struct {
@@ -100,15 +94,12 @@ func LoadProjectConfigFromFile(filePath string) (ProjectConfig, error) {
 	}
 	rootDir := filepath.Dir(filepath.Dir(filePath))
 	return ProjectConfig{
-		RootDir:               rootDir,
-		AITaskDir:             filepath.Join(rootDir, AITaskDirName),
-		SourceFile:            filePath,
-		ProjectID:             projectID,
-		ProjectName:           strings.TrimSpace(fields["project_name"]),
-		OpenVikingRoot:        strings.TrimSpace(fields["openviking_root"]),
-		OpenVikingNamespace:   strings.TrimSpace(fields["openviking_namespace"]),
-		OpenVikingWorkspaceID: strings.TrimSpace(fields["openviking_workspace_id"]),
-		RoomEnabled:           roomEnabled,
+		RootDir:     rootDir,
+		AITaskDir:   filepath.Join(rootDir, AITaskDirName),
+		SourceFile:  filePath,
+		ProjectID:   projectID,
+		ProjectName: strings.TrimSpace(fields["project_name"]),
+		RoomEnabled: roomEnabled,
 	}, nil
 }
 
@@ -288,12 +279,6 @@ func ListBoundProjects(rootDir string) ([]BoundProject, error) {
 func normalizeProjectDocValues(values ProjectDocValues) ProjectDocValues {
 	values.ProjectID = strings.TrimSpace(values.ProjectID)
 	values.ProjectName = strings.TrimSpace(values.ProjectName)
-	values.OpenVikingRoot = strings.TrimSpace(values.OpenVikingRoot)
-	values.OpenVikingNamespace = strings.TrimSpace(values.OpenVikingNamespace)
-	values.OpenVikingWorkspaceID = strings.TrimSpace(values.OpenVikingWorkspaceID)
-	if values.OpenVikingRoot == "" && values.ProjectID != "" {
-		values.OpenVikingRoot = "viking://aitask/projects/" + values.ProjectID
-	}
 	return values
 }
 
@@ -311,9 +296,6 @@ func RenderProjectMarkdown(values ProjectDocValues) string {
 
 project_id: %s
 project_name: %s
-openviking_root: %s
-openviking_namespace: %s
-openviking_workspace_id: %s
 room_enabled: %s
 
 # Redline: never store agent token in this file.
@@ -348,7 +330,7 @@ All task results must be submitted through:
 `+"```bash"+`
 aitask task submit
 `+"```"+`
-`, values.ProjectID, name, values.OpenVikingRoot, values.OpenVikingNamespace, values.OpenVikingWorkspaceID, room)
+`, values.ProjectID, name, room)
 }
 
 func defaultAgentMarkdown() string {
@@ -401,7 +383,6 @@ The project state is not in this chat.
 The project state is stored in:
 
 - Task Orchestrator backend
-- OpenViking context database
 - Local .aitask/project.md
 
 Run:
@@ -443,7 +424,7 @@ aitask run end --reason context_limit_handoff
 func defaultContextMarkdown() string {
 	return `# Context Snapshot
 
-Run aitask bootstrap to refresh this file from backend and OpenViking refs.
+Run aitask bootstrap to refresh this file from backend refs.
 `
 }
 
@@ -472,6 +453,6 @@ func defaultResultMarkdown() string {
 func defaultSkillsMarkdown() string {
 	return `# Skills Cache
 
-Run aitask skill pull to sync project skills from OpenViking into this directory.
+Run aitask skill pull to sync project skills into this directory.
 `
 }

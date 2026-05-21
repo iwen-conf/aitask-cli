@@ -15,7 +15,6 @@ func TestLoadProjectConfig(t *testing.T) {
 	content := `# AI Task Project
 project_id: prj_test
 project_name: Demo
-openviking_root: viking://aitask/projects/prj_test
 room_enabled: true
 `
 	if err := os.WriteFile(filepath.Join(projectDir, ".aitask", "project.md"), []byte(content), 0o644); err != nil {
@@ -36,9 +35,6 @@ room_enabled: true
 	}
 	if cfg.ProjectName != "Demo" {
 		t.Fatalf("project name = %q", cfg.ProjectName)
-	}
-	if cfg.OpenVikingRoot == "" {
-		t.Fatalf("openviking root should not be empty")
 	}
 	if !cfg.RoomEnabled {
 		t.Fatalf("room should be enabled")

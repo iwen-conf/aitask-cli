@@ -12,7 +12,7 @@ func TestRenderPromptCommandNoRecall(t *testing.T) {
 `)
 	t.Setenv("HOME", home)
 	t.Setenv(localstate.EnvStateDB, home+"/.aitask/state.db")
-	if _, err := runWatchTestCommand("worker", "--once", "--memory", "none", "--quiet"); err != nil {
+	if _, err := runWatchTestCommand("worker", "--once", "--quiet"); err != nil {
 		t.Fatalf("seed worker error: %v", err)
 	}
 	stdout, err := runWatchTestCommand("render-prompt", "--event", "evt_1", "--agent", "codex", "--no-recall")

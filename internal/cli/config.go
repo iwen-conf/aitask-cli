@@ -12,22 +12,12 @@ import (
 )
 
 // GlobalConfig is the persistent CLI configuration stored at ~/.aitask/config.json.
-// It holds settings shared across invocations (backend URL, multi-identity profiles,
-// OpenViking server credentials) and is independent of per-project state under
-// <repo>/.aitask/.
+// It holds settings shared across invocations (backend URL, multi-identity profiles)
+// and is independent of per-project state under <repo>/.aitask/.
 type GlobalConfig struct {
 	ServerURL     string                   `json:"server_url,omitempty"`
 	ActiveProfile string                   `json:"active_profile,omitempty"`
 	Profiles      map[string]ProfileRecord `json:"profiles,omitempty"`
-	OpenViking    *OpenVikingGlobal        `json:"openviking,omitempty"`
-}
-
-// OpenVikingGlobal stores the OpenViking server endpoint and (optional) API key
-// at the user level. Per-project Namespace and WorkspaceID live in
-// .aitask/project.md instead.
-type OpenVikingGlobal struct {
-	ServerURL string `json:"server_url,omitempty"`
-	APIKey    string `json:"api_key,omitempty"`
 }
 
 // ProfileRecord caches identity hints for a stored profile so `auth profile list`

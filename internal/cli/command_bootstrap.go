@@ -135,13 +135,12 @@ Role: %s
 Context State: %s
 
 Current summary:
-The project uses Task Orchestrator for task authority, OpenViking for memory, and Project Agent Room for collaboration.
+The project uses Task Orchestrator for task authority and Project Agent Room for collaboration.
 
 Important rules:
 - Do not rely on chat history.
 - Do not start Codex or Gemini tasks unless explicitly delegated.
 - Use CLI for all task state changes.
-- Use OpenViking refs on demand instead of loading all context.
 
 Room:
 - Unread mentions: %d

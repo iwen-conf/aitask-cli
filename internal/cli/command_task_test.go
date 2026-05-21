@@ -16,7 +16,7 @@ func TestTaskResumeAllowsMissingHandoffFlag(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(root, ".aitask"), 0o755); err != nil {
 		t.Fatalf("mkdir .aitask: %v", err)
 	}
-	projectDoc := "# AI Task Project\nproject_id: prj_1\nproject_name: Demo\nopenviking_root: viking://aitask/projects/prj_1\nroom_enabled: true\n"
+	projectDoc := "# AI Task Project\nproject_id: prj_1\nproject_name: Demo\nroom_enabled: true\n"
 	if err := os.WriteFile(filepath.Join(root, ".aitask", "project.md"), []byte(projectDoc), 0o644); err != nil {
 		t.Fatalf("write project doc: %v", err)
 	}
@@ -84,7 +84,7 @@ func TestTaskCreateForwardsStructuredFields(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(root, ".aitask"), 0o755); err != nil {
 		t.Fatalf("mkdir .aitask: %v", err)
 	}
-	projectDoc := "# AI Task Project\nproject_id: prj_1\nproject_name: Demo\nopenviking_root: viking://aitask/projects/prj_1\nroom_enabled: true\n"
+	projectDoc := "# AI Task Project\nproject_id: prj_1\nproject_name: Demo\nroom_enabled: true\n"
 	if err := os.WriteFile(filepath.Join(root, ".aitask", "project.md"), []byte(projectDoc), 0o644); err != nil {
 		t.Fatalf("write project doc: %v", err)
 	}

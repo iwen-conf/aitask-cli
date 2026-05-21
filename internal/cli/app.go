@@ -119,11 +119,8 @@ func (a *App) NewRootCommand() (*cobra.Command, error) {
 		newBootstrapCommand(env),
 		newContextCommand(env),
 		newRunCommand(env),
-		newSearchCommand(env),
 		newSummaryCommand(env),
 		newTaskCommand(env),
-		newMemoryCommand(env),
-		newOpenVikingCommand(env),
 		newSkillCommand(env),
 		newEventsCommand(env),
 		newWorkerCommand(env),
@@ -173,19 +170,15 @@ func (e *CommandEnv) resolveProjectConfig(requireFile bool) (ProjectConfig, erro
 	if strings.TrimSpace(e.opts.projectID) != "" {
 		if cfg, loadErr := LoadProjectConfig(cwd); loadErr == nil {
 			cfg.ProjectID = strings.TrimSpace(e.opts.projectID)
-			if cfg.OpenVikingRoot == "" {
-				cfg.OpenVikingRoot = "viking://aitask/projects/" + cfg.ProjectID
-			}
 			return cfg, nil
 		}
 		aiDir := filepath.Join(cwd, AITaskDirName)
 		return ProjectConfig{
-			RootDir:        cwd,
-			AITaskDir:      aiDir,
-			SourceFile:     filepath.Join(aiDir, "project.md"),
-			ProjectID:      strings.TrimSpace(e.opts.projectID),
-			OpenVikingRoot: "viking://aitask/projects/" + strings.TrimSpace(e.opts.projectID),
-			RoomEnabled:    true,
+			RootDir:     cwd,
+			AITaskDir:   aiDir,
+			SourceFile:  filepath.Join(aiDir, "project.md"),
+			ProjectID:   strings.TrimSpace(e.opts.projectID),
+			RoomEnabled: true,
 		}, nil
 	}
 	cfg, err := LoadProjectConfig(cwd)

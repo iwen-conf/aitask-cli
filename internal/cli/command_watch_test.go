@@ -15,7 +15,7 @@ func TestWatchCommandOnceDryRun(t *testing.T) {
 `)
 	t.Setenv("HOME", home)
 	t.Setenv(localstate.EnvStateDB, filepath.Join(home, ".aitask", "state.db"))
-	if _, err := runWatchTestCommand("worker", "--once", "--memory", "none", "--quiet"); err != nil {
+	if _, err := runWatchTestCommand("worker", "--once", "--quiet"); err != nil {
 		t.Fatalf("seed worker error: %v", err)
 	}
 	stdout, err := runWatchTestCommand("watch", "--agent", "codex", "--once", "--dry-run", "--quiet")

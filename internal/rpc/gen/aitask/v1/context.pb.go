@@ -356,7 +356,6 @@ func (x *CreateHandoffRequest) GetHandoffMarkdown() string {
 type CreateHandoffResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	HandoffId     string                 `protobuf:"bytes,1,opt,name=handoff_id,json=handoffId,proto3" json:"handoff_id,omitempty"`
-	OpenvikingUri string                 `protobuf:"bytes,2,opt,name=openviking_uri,json=openvikingUri,proto3" json:"openviking_uri,omitempty"`
 	NextAction    *NextAction            `protobuf:"bytes,3,opt,name=next_action,json=nextAction,proto3" json:"next_action,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -395,13 +394,6 @@ func (*CreateHandoffResponse) Descriptor() ([]byte, []int) {
 func (x *CreateHandoffResponse) GetHandoffId() string {
 	if x != nil {
 		return x.HandoffId
-	}
-	return ""
-}
-
-func (x *CreateHandoffResponse) GetOpenvikingUri() string {
-	if x != nil {
-		return x.OpenvikingUri
 	}
 	return ""
 }
@@ -565,13 +557,12 @@ const file_aitask_v1_context_proto_rawDesc = "" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\x12\x17\n" +
 	"\atask_id\x18\x02 \x01(\tR\x06taskId\x12\x16\n" +
 	"\x06reason\x18\x03 \x01(\tR\x06reason\x12)\n" +
-	"\x10handoff_markdown\x18\x04 \x01(\tR\x0fhandoffMarkdown\"\x95\x01\n" +
+	"\x10handoff_markdown\x18\x04 \x01(\tR\x0fhandoffMarkdown\"\x84\x01\n" +
 	"\x15CreateHandoffResponse\x12\x1d\n" +
 	"\n" +
-	"handoff_id\x18\x01 \x01(\tR\thandoffId\x12%\n" +
-	"\x0eopenviking_uri\x18\x02 \x01(\tR\ropenvikingUri\x126\n" +
+	"handoff_id\x18\x01 \x01(\tR\thandoffId\x126\n" +
 	"\vnext_action\x18\x03 \x01(\v2\x15.aitask.v1.NextActionR\n" +
-	"nextAction\"9\n" +
+	"nextActionJ\x04\b\x02\x10\x03R\x0eopenviking_uri\"9\n" +
 	"\x18GetCurrentHandoffRequest\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\"\xd2\x01\n" +

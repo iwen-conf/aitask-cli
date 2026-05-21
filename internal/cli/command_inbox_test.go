@@ -155,7 +155,7 @@ func withProjectDir(t *testing.T, projectID string) {
 	if err := os.MkdirAll(filepath.Join(root, ".aitask"), 0o755); err != nil {
 		t.Fatalf("mkdir .aitask: %v", err)
 	}
-	doc := "# AI Task Project\nproject_id: " + projectID + "\nproject_name: Demo\nopenviking_root: viking://aitask/projects/" + projectID + "\nroom_enabled: true\n"
+	doc := "# AI Task Project\nproject_id: " + projectID + "\nproject_name: Demo\nroom_enabled: true\n"
 	if err := os.WriteFile(filepath.Join(root, ".aitask", "project.md"), []byte(doc), 0o644); err != nil {
 		t.Fatalf("write project doc: %v", err)
 	}

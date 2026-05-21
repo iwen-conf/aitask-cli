@@ -95,7 +95,7 @@ func (a *App) ExecuteSpecialized(name, short string, build SpecializedBuilder, a
 // `aitask events`.
 func NewWatchSubcommand(env *CommandEnv) *cobra.Command { return newEventsDaemonCommand(env) }
 
-// NewWorkerSubcommand exposes the local indexer + memory sync worker for
+// NewWorkerSubcommand exposes the local event indexer worker for
 // aitask-worker's main.go.
 func NewWorkerSubcommand(env *CommandEnv) *cobra.Command { return newWorkerCommand(env) }
 

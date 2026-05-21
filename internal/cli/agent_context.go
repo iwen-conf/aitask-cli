@@ -119,9 +119,6 @@ func renderAgentContextBlock(values ProjectDocValues) string {
 	b.WriteString("This project is managed by **AITask** (`aitask` CLI). Follow these rules at session start.\n\n")
 	b.WriteString(fmt.Sprintf("- Project ID: `%s`\n", values.ProjectID))
 	b.WriteString(fmt.Sprintf("- Project Name: `%s`\n", name))
-	if values.OpenVikingRoot != "" {
-		b.WriteString(fmt.Sprintf("- OpenViking root: `%s`\n", values.OpenVikingRoot))
-	}
 	b.WriteString("\n### Required startup sequence\n\n")
 	b.WriteString("```bash\n")
 	b.WriteString("aitask whoami         # confirm agent identity\n")

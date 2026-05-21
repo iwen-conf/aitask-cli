@@ -325,11 +325,6 @@ ON CONFLICT(id) DO UPDATE SET
 		eventID, nullString(row.Scope), nullString(row.Project), nullString(row.ThreadID), nullString(agent), nullString(row.FromAgent), content, string(raw), now, now); err != nil {
 		return err
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO memory_sync(event_id, status)
-VALUES (?, 'pending')
-ON CONFLICT(event_id) DO NOTHING`, eventID); err != nil {
-		return err
-	}
 	return tx.Commit()
 }
 

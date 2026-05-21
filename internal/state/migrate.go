@@ -58,15 +58,6 @@ func Migrate(ctx context.Context, db *sql.DB) error {
   event_id    TEXT,
   updated_at  TEXT NOT NULL
 )`,
-		`CREATE TABLE IF NOT EXISTS memory_sync (
-  event_id      TEXT PRIMARY KEY,
-  status        TEXT NOT NULL DEFAULT 'pending',
-  synced_at     TEXT,
-  retry_count   INTEGER NOT NULL DEFAULT 0,
-  last_error    TEXT,
-  openviking_id TEXT,
-  FOREIGN KEY(event_id) REFERENCES events(id)
-)`,
 		`CREATE TABLE IF NOT EXISTS summaries (
   id              TEXT PRIMARY KEY,
   scope           TEXT NOT NULL,

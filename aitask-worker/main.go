@@ -1,8 +1,7 @@
-// aitask-worker is the local index + memory sync daemon.
+// aitask-worker is the local event indexer daemon.
 //
-// It consumes ~/.aitask/events.ndjson, normalizes events, populates state.db
-// (events / agent_inbox / global_feed / cursors / memory_sync / summaries),
-// and pushes high-value rows to OpenViking through the AITask backend.
+// It consumes ~/.aitask/events.ndjson, normalizes events, and populates
+// state.db (events / agent_inbox / global_feed / cursors / summaries).
 //
 // This binary does not subscribe to the WebSocket stream (that is
 // aitask-watch) and does not wake other agents (that is aitask-agent-watch).
@@ -21,7 +20,7 @@ func main() {
 	app := cli.NewApp(version)
 	err := app.ExecuteSpecialized(
 		"aitask-worker",
-		"Index local events and sync semantic memory to OpenViking",
+		"Index local events into state.db",
 		cli.NewWorkerSubcommand,
 		os.Args[1:],
 	)

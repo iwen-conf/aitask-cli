@@ -27,8 +27,6 @@ const (
 	codeContextHandoffRequired      = "CONTEXT_HANDOFF_REQUIRED"
 	codeHandoffNotFound             = "HANDOFF_NOT_FOUND"
 	codeHandoffAlreadyConsumed      = "HANDOFF_ALREADY_CONSUMED"
-	codeOpenVikingWriteFailed       = "OPENVIKING_WRITE_FAILED"
-	codeOpenVikingReadFailed        = "OPENVIKING_READ_FAILED"
 )
 
 type errorGuide struct {
@@ -112,14 +110,6 @@ var errorGuides = map[string]errorGuide{
 	codeHandoffAlreadyConsumed: {
 		message:  "handoff 已被消费，不能重复 resume。",
 		nextStep: "aitask context handoff current",
-	},
-	codeOpenVikingWriteFailed: {
-		message:  "OpenViking 写入失败。",
-		nextStep: "aitask memory write --from <file> --target decisions",
-	},
-	codeOpenVikingReadFailed: {
-		message:  "OpenViking 读取失败。",
-		nextStep: "aitask memory search \"<query>\" --refs-only",
 	},
 }
 

@@ -53,7 +53,6 @@ func TestRunOnceHappyPath(t *testing.T) {
 	}
 	assertCount(t, db, `SELECT COUNT(*) FROM agent_inbox WHERE event_id='evt_1' AND status='handled'`, 1)
 	assertCount(t, db, `SELECT COUNT(*) FROM events WHERE id='evt_1:result:codex' AND kind='task_done' AND body='ok'`, 1)
-	assertCount(t, db, `SELECT COUNT(*) FROM memory_sync WHERE event_id='evt_1:result:codex' AND status='pending'`, 1)
 }
 
 func TestRunOnceRunnerFailureMarksFailed(t *testing.T) {

@@ -1,6 +1,6 @@
-# AITask CLI Error Codes (BE-130 / BE-127)
+# AITask CLI Error Codes
 
-标准 21 个错误码：
+标准错误码：
 
 1. PROJECT_NOT_FOUND
 2. PROJECT_ACCESS_DENIED
@@ -21,11 +21,9 @@
 17. CONTEXT_HANDOFF_REQUIRED
 18. HANDOFF_NOT_FOUND
 19. HANDOFF_ALREADY_CONSUMED
-20. OPENVIKING_WRITE_FAILED
-21. OPENVIKING_READ_FAILED
 
 CLI 展示规范：
 
 - 始终输出 `Error [CODE]: 中文提示`
 - 若有推荐动作，追加 `下一步: <command>`
-- 错误映射实现见 `backend/internal/cli/error_help.go`
+- 错误映射实现见 `cli/internal/cli/error_help.go`

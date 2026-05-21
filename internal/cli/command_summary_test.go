@@ -3,8 +3,6 @@ package cli
 import (
 	"bytes"
 	"database/sql"
-	"net/http"
-	"net/http/httptest"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -22,57 +20,6 @@ func TestSummaryCommandThreadReadsLocalSummary(t *testing.T) {
 		t.Fatalf("summary --thread error: %v", err)
 	}
 	if !strings.Contains(stdout, "Thread summary") {
-		t.Fatalf("stdout = %s", stdout)
-	}
-}
-
-func TestSummaryCommandAgentFallsBackToMemorySearch(t *testing.T) {
-	root := writeSearchProject(t, "prj_1")
-	withWorkingDir(t, root)
-	home := t.TempDir()
-	t.Setenv("HOME", home)
-	t.Setenv(localstate.EnvStateDB, filepath.Join(home, ".aitask", "missing.db"))
-
-	var gotQuery string
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		gotQuery = r.URL.Query().Get("q")
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"items":[{"uri":"viking://aitask/projects/prj_1/memory/summary.md","title":"Codex Summary"}]}`))
-	}))
-	defer server.Close()
-	saveTestToken(t, server.URL, "tok-codex")
-
-	stdout, err := runSummaryTestCommand("--server", server.URL, "--format", "json", "summary", "--agent", "codex")
-	if err != nil {
-		t.Fatalf("summary --agent error: %v", err)
-	}
-	if gotQuery != "summary agent:codex" {
-		t.Fatalf("query = %q", gotQuery)
-	}
-	if !strings.Contains(stdout, "Codex Summary") {
-		t.Fatalf("stdout = %s", stdout)
-	}
-}
-
-func TestSummaryCommandProjectNoSummaryRecorded(t *testing.T) {
-	root := writeSearchProject(t, "prj_1")
-	withWorkingDir(t, root)
-	home := t.TempDir()
-	t.Setenv("HOME", home)
-	t.Setenv(localstate.EnvStateDB, filepath.Join(home, ".aitask", "missing.db"))
-
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"items":[]}`))
-	}))
-	defer server.Close()
-	saveTestToken(t, server.URL, "tok-codex")
-
-	stdout, err := runSummaryTestCommand("--server", server.URL, "--format", "prompt", "summary", "--project")
-	if err != nil {
-		t.Fatalf("summary --project error: %v", err)
-	}
-	if !strings.Contains(stdout, "No summary recorded") {
 		t.Fatalf("stdout = %s", stdout)
 	}
 }

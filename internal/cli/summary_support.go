@@ -37,29 +37,8 @@ WHERE scope = ? AND scope_id = ?`, scope, scopeID).Scan(&row.ID, &row.Scope, &ro
 	return row, err
 }
 
-func renderSummaryFallback(ctx context.Context, env *CommandEnv, scope string, scopeID string) error {
-	if scope == "thread" {
-		return printNoSummary(env, scope, scopeID)
-	}
-	cfg, err := env.resolveProjectConfig(true)
-	if err != nil {
-		return err
-	}
-	client, _, err := env.clientWithToken(true)
-	if err != nil {
-		return err
-	}
-	payload, err := client.GetREST(ctx, "/api/projects/"+cfg.ProjectID+"/memory/search", map[string]string{
-		"q":        "summary " + scope + ":" + scopeID,
-		"refsOnly": "true",
-	})
-	if err != nil {
-		return err
-	}
-	if len(asSlice(payload["items"])) == 0 {
-		return printNoSummary(env, scope, scopeID)
-	}
-	return env.printer().Print(RenderData{Brief: fmt.Sprintf("%d summary ref(s)", len(asSlice(payload["items"]))), Prompt: renderMemorySearchPrompt(payload), JSON: payload})
+func renderSummaryFallback(_ context.Context, env *CommandEnv, scope string, scopeID string) error {
+	return printNoSummary(env, scope, scopeID)
 }
 
 func printNoSummary(env *CommandEnv, scope string, scopeID string) error {
